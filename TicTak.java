@@ -5,7 +5,6 @@ public class TicTak{
     char playerValue;
     char computerValue;
     int boardPosition;
-    String winner = null;
     ArrayList<Integer> playerPosition;
     ArrayList<Integer> computerPosition;
     Scanner sc = new Scanner(System.in);
@@ -66,6 +65,7 @@ public class TicTak{
     //function to consider player choice
     public void playerChoice(){
         System.out.println("Enter your Choice either 'X' or 'O'");
+        Scanner sc = new Scanner(System.in);
         playerValue=sc.next().charAt(0);
         if (playerValue == 'x'||playerValue == 'X') {
             System.out.println("Your Choice:"+playerValue);
@@ -126,32 +126,13 @@ public class TicTak{
 			
 			this.display();
 			
-			String resultWinner=this.checkWinner();
-			boolean dre = this.draw();
-			if(resultWinner != null ) {
-				System.out.println(resultWinner);
-				if(resultWinner.charAt(0) == this.computerValue) {
-					System.out.println("The winner is Computer");
-					
-				}
-				else if(resultWinner.charAt(0) == this.playerValue) {
-					System.out.println("The winner is Player");
-					
-				}
-				else {
-					System.out.println("The Game is Draw");
-				}
-				
-				this.display();
-				return;
-			}
-		
 			if(tossResult == 0) {
 				tossResult = 1;
 			}
 			else {
 				tossResult = 0;
-			}	
+            }
+            	
 	    }
     }
     
@@ -162,13 +143,13 @@ public class TicTak{
 		}
 		return false;	
     }
-
+    
     //function to play computer move
     public void computerMove() {																			
 		//Random Sides
 		while(true) {
             Random rand = new Random();
-           
+       
 			int move = rand.nextInt(9);
 			if(this.moveValid(move)) {
 				this.board[(int)(move / 3)][(int)(move % 3)] = this.computerValue;
@@ -177,61 +158,6 @@ public class TicTak{
 			}	
 		}
 	}
-    
-    
-    //function to check if equal values on board 
-    boolean equals3(char a, char b, char c) {
-        return (a == b && b == c && a != ' ');
-    }
-
-    //check winner function
-    public String checkWinner() {
-        isHorizontal();
-        isVertical();
-        isDiagonal();
-        if (this.draw() == true && winner == null  ) {
-            return "tie";
-        } else {
-            return winner;
-        }
-    }
-    // horizontal
-    public void isHorizontal(){
-        for (int i = 0; i < 3; i++) {
-            if (this.equals3(board[i][0], board[i][1], board[i][2])) {
-            winner = Character.toString(board[i][0]);
-            }
-        }
-    }
-    // Vertical
-    public void isVertical(){
-        for (int i = 0; i < 3; i++) {
-            if (equals3(board[0][i], board[1][i], board[2][i])) {
-            winner = Character.toString(board[0][i]);
-            }
-        }
-    }
-    // Diagonal
-    public void isDiagonal(){
-        if (equals3(board[0][0], board[1][1], board[2][2])) {
-            winner = Character.toString(board[0][0]);
-        }
-        if (equals3(board[2][0], board[1][1], board[0][2])) {
-            winner = Character.toString(board[2][0]);
-        }
-    }
-
-    //Checking for draw
-	public boolean draw() {
-		for(int i = 0; i < 3; i++) {
-			for(int j = 0; j < 3; j++) {
-				if (this.board[i][j] == ' ') {
-					return false;
-				}
-			}
-		}
-		return true;
-    }
     
     TicTak() {
         board = new char[3][3];
