@@ -1,3 +1,4 @@
+
 import java.util.*;
 public class TicTak{
     
@@ -55,7 +56,7 @@ public class TicTak{
 		int checkOption = rand.nextInt(2);
 		//option 1 = PLAYER <> option 2 = COMPUTER 
 		if(checkOption == 1) {
-            System.out.println("Player Chance to Play");
+            System.out.println("Player Chance to Play either 'X' or 'O' ");
         }
 		else {
             System.out.println("Computer Chance to Play");
@@ -65,7 +66,7 @@ public class TicTak{
     
     //function to consider player choice
     public void playerChoice(){
-        System.out.println("Enter your Choice either 'X' or 'O'");
+        System.out.println("Enter your Choice");
         playerValue=sc.next().charAt(0);
         if (playerValue == 'x'||playerValue == 'X') {
             System.out.println("Your Choice:"+playerValue);
@@ -188,6 +189,12 @@ public class TicTak{
 				this.computerPosition.add(move);
                 return;
             }
+        }
+        //check Centre Position
+        if(this.moveValid(4)) {
+            this.board[(int)(move / 3)][(int)(move % 3)] = this.computerValue;
+            this.computerPosition.add(move);
+            return;
         }
 		//Random Sides
 		while(true) {
