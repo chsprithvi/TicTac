@@ -55,7 +55,7 @@ public class TicTak{
 		int checkOption = rand.nextInt(2);
 		//option 1 = PLAYER <> option 2 = COMPUTER 
 		if(checkOption == 1) {
-            System.out.println("Player Chance to Play");
+            System.out.println("Player Chance to Playeither 'X' or 'O' ");
         }
 		else {
             System.out.println("Computer Chance to Play");
@@ -65,7 +65,7 @@ public class TicTak{
     
     //function to consider player choice
     public void playerChoice(){
-        System.out.println("Enter your Choice either 'X' or 'O'");
+        System.out.println("Enter your Choice");
         playerValue=sc.next().charAt(0);
         if (playerValue == 'x'||playerValue == 'X') {
             System.out.println("Your Choice:"+playerValue);
@@ -165,7 +165,6 @@ public class TicTak{
 
     //function to play computer move
     public void computerMove() {	
-        
         //Winning Position
 		int move = this.checkAnyWinning(this.computerPosition);
 		if( move != -1 && this.moveValid(move)) {
@@ -173,7 +172,13 @@ public class TicTak{
 			this.computerPosition.add(move);
 			return;
         }
-	
+        //check winning position of player and choose that position
+        move = this.checkAnyWinning(this.playerPosition);
+        if( move != -1 && this.moveValid(move)) {
+            this.board[(int)(move / 3)][move % 3] = this.computerValue;
+            this.computerPosition.add(move);
+            return;
+        }
 		//Random Sides
 		while(true) {
             Random rand = new Random();
@@ -239,9 +244,9 @@ public class TicTak{
 				}
 			}
 		}
-        return true;
+		return true;
     }
-
+    
     public int checkAnyWinning(ArrayList<Integer> position) {
 		//Storing all the wining Positions
 		int[][] winningPosition = { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 0, 3, 6 }, { 1, 4, 7 }, { 2, 5, 8 }, { 0, 4, 8 },
