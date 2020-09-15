@@ -23,6 +23,15 @@ public class TicTak{
             
         }
         gamePlay(tossValue);
+        System.out.println("Do you want to continue the game \n press Y or N");
+        char temp=sc.next().charAt(0);
+        if(temp=='Y'){
+            TicTak playAgain=new TicTak();
+            playAgain.play();
+        }
+        else{
+        System.out.println("Thanks for playing");
+        }
     }
     
 
@@ -307,6 +316,6 @@ public class TicTak{
         //OBJ created
         TicTak objTicTak = new TicTak();
         objTicTak.play();
-        
+
     }
 }
