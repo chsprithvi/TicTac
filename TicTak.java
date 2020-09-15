@@ -1,21 +1,31 @@
 import java.util.*;
-class TicTak{
+public class TicTak{
     
     char[][] board= new char[3][3];
-    Random rand = new Random();
     char playerValue;
+    char computerValue;
     int boardPosition;
-    int rowValue;
-    int colValue;
-
+    String winner = null;
+    ArrayList<Integer> playerPosition;
+    ArrayList<Integer> computerPosition;
+    Scanner sc = new Scanner(System.in);
     
     //Function play to start game
     public void play() {
-        display();
-        toss();
+        int tossValue = toss();
+		this.display();
         
+        if (tossValue==1) {
+
+            playerChoice();
+        } else {
+            computerChoice();
+            
+        }
+        gamePlay(tossValue);
     }
     
+
 
     //function to display
 	public void display() {
@@ -39,37 +49,32 @@ class TicTak{
     }
     
     //function to check if player or computer chance
-    public void toss(){
-
+    public int toss(){
+        Random rand = new Random();
 		// Generating a random number b/w 0 and 1
 		int checkOption = rand.nextInt(2);
 		//option 1 = PLAYER <> option 2 = COMPUTER 
 		if(checkOption == 1) {
             System.out.println("Player Chance to Play");
-            playerChoice();
         }
 		else {
             System.out.println("Computer Chance to Play");
-            computerChoice();
-		}
+        }
+        return checkOption;
     }
     
     //function to consider player choice
     public void playerChoice(){
-        System.out.println("Enter your Choice either 'X' or 'O' ");
-        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter your Choice either 'X' or 'O'");
         playerValue=sc.next().charAt(0);
-        System.out.println("Enter your desired position b/w [1-9]");
-        boardPosition=sc.nextInt();
-        
         if (playerValue == 'x'||playerValue == 'X') {
             System.out.println("Your Choice:"+playerValue);
-            setPosition(boardPosition,playerValue);
+            this.computerValue='O';
             
         } 
         else if(playerValue == 'o'||playerValue =='O') {
             System.out.println("Your Choice:"+playerValue);
-            setPosition(boardPosition,playerValue);
+            this.computerValue='X';
 
         }
         else{
@@ -80,27 +85,164 @@ class TicTak{
     
     //function for computer choice
     public void computerChoice(){
-
-        int computerValue = rand.nextInt(2);
-		//option 1 = PLAYER <> option 2 = COMPUTER 
-		if(computerValue == 1) {
-			System.out.println("Computer choice: X");
+        Random rand = new Random();
+        int computerChoice = rand.nextInt(2);
+		//option 1 = PLAYER </> option 2 = COMPUTER 
+		if(computerChoice == 1) {
+            this.computerValue='X';
+            System.out.println("Computer choice:"+this.computerValue);
+            this.playerValue='O';
 		}
 		else {
-			System.out.println("Computer Choice: O");
+            this.computerValue='O';
+            System.out.println("Computer Choice:"+this.computerValue);
+            this.playerValue='X';
 		}
 
     }
     
-    //function to set positions on board
-    public void setPosition(int setPosition, char setValue){
-        rowValue=(setPosition-1)/3;
-        colValue=(setPosition-1)%3;
-        this.board[rowValue][colValue]=setValue;
-        display();                
-    } 
+    //function to start game after intial toss and play
+    public void gamePlay(int tossResult) {
+		Scanner sc = new Scanner(System.in);
+		int move;
+		while(true) {
+			if(tossResult == 1) {
+				System.out.println("Enter the move in range[1-9]");
+				move = sc.nextInt();
+				move -= 1;
+				boolean moveValid = moveValid(move);
+				
+				if(!moveValid ) {
+					System.out.println("Invalid Move Try Once More");
+					continue;			
+				}
+				this.playerPosition.add(move);
+				this.board[(int)(move / 3)][move % 3] = this.playerValue;
+			}
+			else {
+				System.out.println("Computer Turn");
+				computerMove();
+			}
+			
+			this.display();
+			
+			String resultWinner=this.checkWinner();
+			boolean dre = this.draw();
+			if(resultWinner != null ) {
+				System.out.println(resultWinner);
+				if(resultWinner.charAt(0) == this.computerValue) {
+					System.out.println("The winner is Computer");
+					
+				}
+				else if(resultWinner.charAt(0) == this.playerValue) {
+					System.out.println("The winner is Player");
+					
+				}
+				else {
+					System.out.println("The Game is Draw");
+				}
+				
+				this.display();
+				return;
+			}
+		
+			if(tossResult == 0) {
+				tossResult = 1;
+			}
+			else {
+				tossResult = 0;
+			}	
+	    }
+    }
     
-  
+    //function to check valid or invalid move
+    public boolean moveValid(int move) {
+		if(this.board[(int)(move / 3)][move % 3] == ' ') {
+			return true;
+		}
+		return false;	
+    }
+
+    //function to play computer move
+    public void computerMove() {																			
+		//Random Sides
+		while(true) {
+            Random rand = new Random();
+           
+			int move = rand.nextInt(9);
+			if(this.moveValid(move)) {
+				this.board[(int)(move / 3)][(int)(move % 3)] = this.computerValue;
+				this.computerPosition.add(move);
+				return;
+			}	
+		}
+	}
+    
+    
+    //function to check if equal values on board 
+    boolean equals3(char a, char b, char c) {
+        return (a == b && b == c && a != ' ');
+    }
+
+    //check winner function
+    public String checkWinner() {
+        isHorizontal();
+        isVertical();
+        isDiagonal();
+        if (this.draw() == true && winner == null  ) {
+            return "tie";
+        } else {
+            return winner;
+        }
+    }
+    // horizontal
+    public void isHorizontal(){
+        for (int i = 0; i < 3; i++) {
+            if (this.equals3(board[i][0], board[i][1], board[i][2])) {
+            winner = Character.toString(board[i][0]);
+            }
+        }
+    }
+    // Vertical
+    public void isVertical(){
+        for (int i = 0; i < 3; i++) {
+            if (equals3(board[0][i], board[1][i], board[2][i])) {
+            winner = Character.toString(board[0][i]);
+            }
+        }
+    }
+    // Diagonal
+    public void isDiagonal(){
+        if (equals3(board[0][0], board[1][1], board[2][2])) {
+            winner = Character.toString(board[0][0]);
+        }
+        if (equals3(board[2][0], board[1][1], board[0][2])) {
+            winner = Character.toString(board[2][0]);
+        }
+    }
+
+    //Checking for draw
+	public boolean draw() {
+		for(int i = 0; i < 3; i++) {
+			for(int j = 0; j < 3; j++) {
+				if (this.board[i][j] == ' ') {
+					return false;
+				}
+			}
+		}
+		return true;
+    }
+    
+    TicTak() {
+        board = new char[3][3];
+		for(int i = 0; i < 3; i++) {
+			for(int j = 0; j < 3; j++) {
+				this.board[i][j] = ' ';
+			}
+		}
+        playerPosition = new ArrayList<Integer>();
+        computerPosition = new ArrayList<Integer>();
+    }
 
     public static void main(String[] args) {
         System.out.println(" %%%%%%% TicTakToe %%%%%%% ");
